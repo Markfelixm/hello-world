@@ -1,0 +1,88 @@
+// https://editor.p5js.org/Markfelixm/present/HyR9ttXZ4
+
+// MFM
+// f(t) = A * sin(w * t + angle)
+
+
+let time = 0
+let rate = 0.05
+let angle
+let angleMultiplier = 1
+let x = 1, y = 1, xMini = 1, yMini = 1
+let xT = 0.2, yT = 0.4 // frequencies
+
+let oscScale = 5
+let uiMargin = 20
+let aSlider, xTSlider, yTSlider, rSlider
+
+function setup() {
+  createCanvas(500, 500)
+  // top left
+  aSlider = createSlider(1, 6, 1) // MARK: find appropriate slider range
+  aSlider.position(uiMargin, uiMargin) 
+  // bottom left
+  xTSlider = createSlider(1, 20, 10)
+  xTSlider.position(uiMargin, height - 15 - uiMargin)
+  //bottom right
+  yTSlider = createSlider(1, 20, 10)
+  yTSlider.position(width - yTSlider.width - uiMargin, height - 15 - uiMargin)
+  // top right
+  rSlider = createSlider(0, 20, 4)
+	rSlider.position(width - rSlider.width - uiMargin, uiMargin)
+}	
+
+function draw() {
+  background(0, 12)
+  noStroke()
+  strokeWeight(3)
+  fill(240, 200, 40, 255)
+  push()
+  
+  xT = xTSlider.value()
+  yT = yTSlider.value()
+  angleMultiplier = aSlider.value()
+  angle = angleMultiplier * PI / 2
+  x = width / oscScale * sin(2 * PI / xT * time + angle) + width / 2
+  y = height / oscScale * cos(2 * PI / yT * time + angle) + height / 2
+  
+  
+  // Main orb
+  fill(20, 100, 150, 50)
+  ellipse(x, y, 20)
+  pop()
+  ellipse(x, y, 10)
+  point(x, y)
+  
+  
+  // Orbiters
+  translate(x, y)
+  xMini = width / (oscScale * 5) * sin(22 * PI / xT * time + angle)
+  yMini = height / (oscScale * 5) * cos(22 * PI / yT * time + angle)
+  
+  let xMiniColor = map(xMini, -20, 20, 0, 255)
+  fill(xMiniColor, 240, xMiniColor, 180)
+  ellipse(xMini, yMini, 3)
+  fill(240, 20, xMiniColor, 150)
+  ellipse(0.7 * yMini, 0.7 * xMini, 2)
+  
+  rate = rSlider.value()
+  time += rate / 100
+  
+  // translate expirements
+  push()
+  translate(-x, 0)
+  ellipse(10, 0, 4)
+  pop()
+  translate(0, -y)
+  ellipse(0, 10, 4)
+  translate(-x, 0)
+  
+  fill(255, 255, 100, xMiniColor)
+  text(round(angle), aSlider.x + aSlider.width + 15, aSlider.y + 14)
+  text(round(xT), xTSlider.x + xTSlider.width + 10, xTSlider.y + 14)
+  text(round(yT), yTSlider.x - 20, yTSlider.y + 14)
+  text(round(rate), rSlider.x - 20, rSlider.y + 14)
+	
+  // Ideas:
+  // 1. assign colors to reflect parameters, rate of color change could be associated with rate of paramter 
+}
