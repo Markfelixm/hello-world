@@ -1,2 +1,2 @@
 # hello-world
-Various assortment
+Various assortment of programming interests.
