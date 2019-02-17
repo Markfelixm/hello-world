@@ -1,0 +1,65 @@
+// View animation at: https://editor.p5js.org/Markfelixm/present/yXbOH0pva
+
+// MFM
+// Cardioid
+// Equations at https://en.wikipedia.org/wiki/Cardioid
+// Inspired by Coding Train, https://www.youtube.com/watch?v=bl3nc_a1nvs
+
+let radius;
+let pSlider;
+let pointCount;
+let factor = 0;
+let trailCanvas;
+
+function setup() {
+  createCanvas(500, 500);
+  trailCanvas = createGraphics(width, height);
+  trailCanvas.clear();
+  radius = width / 2 - 20;
+  pSlider = createSlider(2, 500, 200);
+  pSlider.position(0, 0);
+}
+
+function getVector(index, pointCount) {
+  let angle = map(index % pointCount, 0, pointCount, 0, TWO_PI);
+  angle += HALF_PI; // turn starting point
+  const v = p5.Vector.fromAngle(angle);
+  v.mult(radius);
+  return v;
+}
+
+function draw() {
+  image(trailCanvas, 0, 0);
+  
+  background(0);
+  translate(width / 2, height / 2);
+
+  stroke(255);
+  noFill();
+  pointCount = pSlider.value();
+  text(round(pointCount) + " points", 20 - width / 2, 30 - height / 2);
+  
+  // Time-related variables
+  factor += 0.005;
+  
+  // Outer circle
+  strokeWeight(3);
+	fill(255);
+  const a = getVector(0, pointCount); // origin
+  const b = getVector(199 * factor, pointCount); // leading point
+  trailCanvas.ellipse(b.x, b.y, 10);
+
+  // Lines
+  strokeWeight(1);
+  for (let i = 0; i < pointCount; i++) {
+    let r = map(i, 0, pointCount, 0, 255);
+    stroke(r, 0, 100, r + 42);
+
+    const a = getVector(i, pointCount);
+    const b = getVector(i * factor, pointCount);
+    line(a.x, a.y, b.x, b.y);
+
+    //ellipse(a.x, b.y, 10);
+    //ellipse(b.x, a.y, 10);
+  }
+}
